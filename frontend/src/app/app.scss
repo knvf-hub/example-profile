@@ -1,0 +1,60 @@
+.combo-wrap { position: relative; }
+
+.combo-box {
+  min-height: 42px; padding: 5px 8px;
+  border: 1.5px solid #b6d0fa; border-radius: 8px;
+  background: #fff; display: flex; flex-wrap: wrap;
+  align-items: center; gap: 5px; cursor: text;
+  transition: border-color .15s, box-shadow .15s;
+
+  &:focus-within, &.open {
+    border-color: #1a56db;
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, .12);
+  }
+}
+
+.combo-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #e8f0fe; border: 1px solid #b6d0fa;
+  border-radius: 6px; padding: 2px 6px 2px 9px;
+  font-size: 13px; color: #1a56db; white-space: nowrap;
+
+  button {
+    background: none; border: none; cursor: pointer; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #5b8dee; width: 14px; height: 14px;
+    border-radius: 3px; transition: background .12s, color .12s;
+    i { font-size: 11px; }
+    &:hover { background: #b6d0fa; color: #1a56db; }
+  }
+}
+
+.combo-input {
+  border: none; outline: none; font-size: 14px;
+  background: transparent; min-width: 120px;
+  flex: 1; height: 26px; padding: 0 2px;
+  &::placeholder { color: #aab4c8; }
+}
+
+.combo-dropdown {
+  display: none; position: absolute; top: calc(100% + 4px);
+  left: 0; right: 0; background: #fff;
+  border: 1.5px solid #b6d0fa; border-radius: 8px;
+  z-index: 100; overflow: hidden;
+  box-shadow: 0 6px 20px rgba(26, 86, 219, .10);
+  &.open { display: block; }
+}
+
+.combo-options { max-height: 220px; overflow-y: auto; }
+
+.combo-opt {
+  padding: 10px 14px; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .1s;
+
+  .check-icon { font-size: 15px; color: #1a56db; opacity: 0; }
+  &:hover { background: #f0f5ff; }
+  &.selected { color: #1a56db; .check-icon { opacity: 1; } }
+}
+
+.combo-empty { padding: 14px; font-size: 13px; color: #9baec8; text-align: center; }

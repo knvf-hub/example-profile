@@ -1,0 +1,203 @@
+<div class="container my-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-success text-white text-center">
+      <h4 class="mb-0">{{ title() }}</h4>
+    </div>
+
+    <div class="card-body">
+      <div class="alert alert-success" *ngIf="message">
+        {{ message }}
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">First Name</label>
+            <input class="form-control" type="text" formControlName="firstName" />
+            <div class="text-danger small" *ngIf="form.controls.firstName.touched && form.controls.firstName.invalid">
+              Please enter first name
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Last Name</label>
+            <input class="form-control" type="text" formControlName="lastName" />
+            <div class="text-danger small" *ngIf="form.controls.lastName.touched && form.controls.lastName.invalid">
+              Please enter last name
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input class="form-control" type="email" formControlName="email" (keypress)="onEmailKeypress($event)" />
+            <div class="text-danger small"
+              *ngIf="form.controls.email.touched && form.controls.email.hasError('required')">
+              Please enter email
+            </div>
+            <div class="text-danger small" *ngIf="form.controls.email.touched && form.controls.email.hasError('email')">
+              Please enter valid email
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Phone</label>
+            <input class="form-control" type="text" maxlength="10" formControlName="phone"
+              (keypress)="onPhoneKeypress($event)" />
+            <div class="text-danger small"
+              *ngIf="form.controls.phone.touched && form.controls.phone.hasError('required')">
+              Please enter phone
+            </div>
+            <div class="text-danger small"
+              *ngIf="form.controls.phone.touched && form.controls.phone.hasError('pattern')">
+              Phone must be 9-10 digits
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Profile</label>
+            <input class="form-control" type="file" accept="image/*" (change)="onFileChange($event)" />
+            <div class="text-danger small"
+              *ngIf="form.controls.profileBase64.touched && form.controls.profileBase64.invalid">
+              Please upload profile
+            </div>
+
+            <img *ngIf="form.controls.profileBase64.value" [src]="form.controls.profileBase64.value"
+              class="img-thumbnail mt-2" width="120" height="120" alt="profile" />
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Birth Day</label>
+            <input class="form-control" type="date" formControlName="birthDate" [max]="today" />
+            <div class="text-danger small" *ngIf="form.controls.birthDate.touched && form.controls.birthDate.invalid">
+              Please enter birth day
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Occupation</label>
+            <div class="combo-wrap" #comboWrap>
+
+              <div class="combo-box" [class.open]="dropdownOpen" (click)="focusSearch()">
+                <!-- Tags อยู่ใน box -->
+                <span class="combo-tag" *ngFor="let id of occupationsControl">
+                  {{ getOccupationName(id) }}
+                  <button type="button" (mousedown)="$event.preventDefault(); toggleOccupation(id)">
+                    <i class="ti ti-x"></i>
+                  </button>
+                </span>
+
+                <!-- Search input -->
+                <input #searchInput class="combo-input" [(ngModel)]="searchText" [ngModelOptions]="{standalone: true}"
+                  [placeholder]="occupationsControl.length ? '' : 'Select occupation...'" (focus)="dropdownOpen = true"
+                  (input)="dropdownOpen = true" (keydown.escape)="dropdownOpen = false" autocomplete="off" />
+              </div>
+
+              <div class="combo-dropdown" [class.open]="dropdownOpen">
+                <div class="combo-options">
+                  <div *ngFor="let o of filteredOccupations" class="combo-opt"
+                    [class.selected]="occupationsControl.includes(o.id)"
+                    (mousedown)="$event.preventDefault(); toggleOccupation(o.id)">
+                    {{ o.name }}
+                    <i class="ti ti-check check-icon"></i>
+                  </div>
+                  <div *ngIf="!filteredOccupations.length" class="combo-empty">ไม่พบผลลัพธ์</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-danger small"
+              *ngIf="form.controls.occupationIds.touched && form.controls.occupationIds.invalid">
+              Please select occupation
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label d-block">Sex</label>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" value="Male" formControlName="gender" />
+              <label class="form-check-label">Male</label>
+            </div>
+
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" value="Female" formControlName="gender" />
+              <label class="form-check-label">Female</label>
+            </div>
+
+            <div class="text-danger small" *ngIf="form.controls.gender.touched && form.controls.gender.invalid">
+              Please select sex
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2 mt-4">
+          <button class="btn btn-success px-4" type="submit" [disabled]="loading">
+            {{ loading ? 'Saving...' : 'Save' }}
+          </button>
+
+          <button class="btn btn-secondary px-4" type="button" (click)="clear()" [disabled]="loading">
+            Clear
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mt-4">
+    <div class="card-header">
+      <h5 class="mb-0">Profiles</h5>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-bordered table-hover" *ngIf="profiles.length">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Gender</th>
+            <th>View</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let profile of profiles">
+            <td>{{ profile.id }}</td>
+            <td>{{ profile.firstName }} {{ profile.lastName }}</td>
+            <td>{{ profile.email }}</td>
+            <td>{{ profile.phone }}</td>
+            <td>{{ profile.gender }}</td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary" type="button" (click)="viewProfile(profile)">
+                View
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="text-muted" *ngIf="!profiles.length">
+        No profile data
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mt-4" *ngIf="selectedProfile">
+    <div class="card-header">
+      <h5 class="mb-0">Profile Detail</h5>
+    </div>
+
+    <div class="card-body">
+      <img *ngIf="selectedProfile.profileBase64" [src]="selectedProfile.profileBase64" class="img-thumbnail mb-3"
+        width="120" height="120" alt="selected profile" />
+
+      <p><strong>ID:</strong> {{ selectedProfile.id }}</p>
+      <p><strong>Name:</strong> {{ selectedProfile.firstName }} {{ selectedProfile.lastName }}</p>
+      <p><strong>Email:</strong> {{ selectedProfile.email }}</p>
+      <p><strong>Phone:</strong> {{ selectedProfile.phone }}</p>
+      <p><strong>Birth Day:</strong> {{ formatDate(selectedProfile.birthDate) }}</p>
+      <p><strong>Gender:</strong> {{ selectedProfile.gender }}</p>
+    </div>
+  </div>
+</div>

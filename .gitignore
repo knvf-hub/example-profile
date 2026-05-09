@@ -1,0 +1,72 @@
+# =========================
+# OS / Editor
+# =========================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Mac
+.AppleDouble
+.LSOverride
+
+# =========================
+# Logs
+# =========================
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Angular / Node
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+frontend/coverage/
+
+# Angular build cache
+.angular/cache/
+
+# Environment files
+frontend/src/environments/*.local.ts
+
+# =========================
+# .NET / C#
+# =========================
+backend/bin/
+backend/obj/
+backend/.vs/
+
+# Rider / VS
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# =========================
+# SQLite
+# =========================
+backend/app.db
+backend/app.db-shm
+backend/app.db-wal
+
+# =========================
+# Temp / Build
+# =========================
+tmp/
+temp/
+*.tmp
+
+# =========================
+# Optional
+# =========================
+
+# If later use secrets
+*.env
+
+# Publish output
+publish/
